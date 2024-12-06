@@ -1,0 +1,7 @@
+.Card {
+    background: rgba(68, 72, 79, 0.3);
+    border-radius: 0.75rem;
+    padding: 0.375rem;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 0 1rem -0.25rem rgba(109, 110, 114, 0.1);
+}

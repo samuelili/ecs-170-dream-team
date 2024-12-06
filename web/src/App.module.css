@@ -1,0 +1,96 @@
+.Root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.Content {
+    width: calc(100vw - 4rem);
+    max-width: 30rem;
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: stretch;
+    gap: 0.25rem;
+}
+
+.Title {
+    max-width: 70vw;
+    font-size: 3.25rem;
+    text-align: center;
+    line-height: 100%;
+    margin-bottom: 2rem;
+    color: white;
+}
+
+.SearchInput {
+    color: white;
+    background: rgba(207, 244, 255, 0.08);
+    border-radius: 0.425rem;
+    gap: 1rem;
+    transition: background 140ms, box-shadow 140ms, transform 140ms;
+    border: 0;
+    outline: 0;
+    padding: 0.5rem 0.75rem;
+    width: 100%;
+
+    &::placeholder {
+        color: rgba(208, 233, 239, 0.47);
+    }
+
+    &:hover, &:focus-visible {
+        background: rgba(156, 164, 171, 0.2);
+        box-shadow: 0 0 0.75rem -0.25rem rgba(200, 200, 200, 0.4);
+    }
+}
+
+.SwapContainer {
+    width: 100%;
+    display: grid;
+
+    &[data-search~=false] {
+        & > *:first-child {
+            transform: translateX(0);
+        }
+        & > *:last-child {
+            opacity: 0;
+            transform: translateX(50%);
+            pointer-events: none;
+        }
+    }
+
+    &[data-search~=true] {
+        & > *:first-child {
+            opacity: 0;
+            transform: translateX(-50%);
+            pointer-events: none;
+        }
+        & > *:last-child {
+            transform: translateX(0);
+        }
+    }
+}
+
+.Results, .SearchResults {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    grid-area: 1 / 1 / 2 / 2;
+
+    transition: transform 240ms, opacity 240ms;
+}
+
+.NoResult {
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+    min-height: 200px;
+}
