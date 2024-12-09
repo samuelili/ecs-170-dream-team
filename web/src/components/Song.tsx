@@ -1,11 +1,12 @@
-import {useEffect, useState} from "react";
+import {BaseHTMLAttributes, useEffect, useState} from "react";
 
-const Song = ({trackId, title, artist, token, duration}: {
+const Song = ({trackId, title, artist, token, duration, loading, ...props}: BaseHTMLAttributes<HTMLDivElement> & {
   trackId: string,
   title: string,
   artist: string,
   token: string,
   duration: number,
+  loading?: boolean
 }) => {
   const [displayImage, setDisplayImage] = useState<{
     url: string,
@@ -14,7 +15,7 @@ const Song = ({trackId, title, artist, token, duration}: {
   } | null>(null);
 
   useEffect(() => {
-    fetch(`https://api.spotify.com/v1/tracks/53QF56cjZA9RTuuMZDrSA6`, {
+    fetch(`https://api.spotify.com/v1/tracks/${trackId}`, {
       headers: {
         "Authorization": `Bearer ${token}`
       }
@@ -46,8 +47,12 @@ const Song = ({trackId, title, artist, token, duration}: {
   const minutes = Math.floor(duration / (60 * 1000)) % 60;
 
   return (
-    <div className={"song-row"}>
-      <img className={"album"} src={displayImage?.url}/>
+    <div className={"song-row"} style={{
+      opacity: loading ? 0.3 : 1,
+    }} {...props}>
+      <div className={"album-container"}>
+        {displayImage && <img className={"album"} src={displayImage?.url} loading={"eager"} alt={trackId}/>}
+      </div>
       <div className={"song-text"}>
         <p className={"song-title"}>{title}</p>
         <p className={"artist"}>{artist}</p>

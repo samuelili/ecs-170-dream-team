@@ -25,6 +25,12 @@
     color: white;
 }
 
+.SearchContainer {
+    position: sticky;
+    top: 2rem;
+    z-index: 2;
+}
+
 .SearchInput {
     color: white;
     background: rgba(207, 244, 255, 0.08);
@@ -80,7 +86,7 @@
 
     grid-area: 1 / 1 / 2 / 2;
 
-    transition: transform 240ms, opacity 240ms;
+    transition: transform 240ms, opacity 240ms, pointer-events 240ms;
 }
 
 .NoResult {
