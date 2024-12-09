@@ -83,6 +83,7 @@
     grid-area: 1 / 1 / 2 / 2;
 
     transition: transform 240ms, opacity 240ms, pointer-events 240ms;
+    height: fit-content;
 }
 
 .ResultsContainer {

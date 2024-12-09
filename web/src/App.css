@@ -27,6 +27,7 @@ h1 {
     border-radius: 0.425rem;
     gap: 1rem;
     transition: background 140ms, box-shadow 140ms, transform 140ms, opacity 200ms;
+    cursor: pointer;
 
     &:hover {
         background: rgba(156, 164, 171, 0.2);

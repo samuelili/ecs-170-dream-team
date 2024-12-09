@@ -110,15 +110,18 @@ function App() {
                  onChange={event => setSearchQuery(event.target.value)} value={searchQuery}/>
         </Card>
         <div className={styles.SwapContainer} data-search={showSearch}>
-          <div className={styles.ResultsContainer}>{track && (
-            <Card>
-              <h5 style={{marginLeft: "0.30625rem", marginBottom: "0.25rem", marginTop: "0.125rem"}}>Showing
-                Recommendations For:</h5>
-              <Song trackId={track.track_id} artist={track.artist_name} duration={track.duration_ms} token={token}
-                    title={track.track_name}/>
+          <div className={styles.ResultsContainer}>
+            {track && (
+              <Card>
+                <h5 style={{marginLeft: "0.30625rem", marginBottom: "0.25rem", marginTop: "0.125rem"}}>Showing
+                  Recommendations For:</h5>
+                <Song trackId={track.track_id} artist={track.artist_name} duration={track.duration_ms} token={token}
+                      title={track.track_name} onClick={() => {
+                  window.open(`https://open.spotify.com/track/${track.track_id}`, '_blank')
+                }}/>
 
-            </Card>
-          )}
+              </Card>
+            )}
             <Card className={styles.Results}>
               {recommendations.length > 0 ? recommendations.map(track => <Song key={track.track_id}
                                                                                trackId={track.track_id}
@@ -126,7 +129,10 @@ function App() {
                                                                                artist={track.artist_name}
                                                                                token={token}
                                                                                duration={track.duration_ms}
-                                                                               loading={recommendationsLoading}/>) : (
+                                                                               loading={recommendationsLoading}
+                                                                               onClick={() => {
+                                                                                 window.open(`https://open.spotify.com/track/${track.track_id}`, '_blank')
+                                                                               }}/>) : (
                 <div className={styles.NoResult}>
                   {recommendationsLoading ? "Loading..." : "Start By Searching A Track!"}
                 </div>
