@@ -79,14 +79,22 @@
     }
 }
 
+.ResultsContainer, .SearchResults {
+    grid-area: 1 / 1 / 2 / 2;
+
+    transition: transform 240ms, opacity 240ms, pointer-events 240ms;
+}
+
+.ResultsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
 .Results, .SearchResults {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-
-    grid-area: 1 / 1 / 2 / 2;
-
-    transition: transform 240ms, opacity 240ms, pointer-events 240ms;
 }
 
 .NoResult {

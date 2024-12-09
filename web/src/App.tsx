@@ -1,7 +1,7 @@
 import './App.css'
 import styles from "./App.module.css";
 import Card from "./components/Card.tsx";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import Song from "./components/Song.tsx";
 
 export type TrackData = {
@@ -21,22 +21,36 @@ function App() {
   const [searchLoading, setSearchLoading] = useState(false);
   const [interacting, setInteracting] = useState(false);
 
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   useEffect(() => {
+    if (searchQuery.length === 0) return;
+
     const controller = new AbortController();
 
     setSearchLoading(true);
 
-    fetch(`/api/search?query=${searchQuery}`, {
-      signal: controller.signal
-    }).then(res => res.json()).then(
-      (data: TrackData[]) => {
-        setSearchLoading(false);
-        setSearchResults(data);
-      },
-    );
+    // Clear the previous timeout when input changes
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    // Set a new timeout to update throttled input after 500ms
+    timeoutRef.current = setTimeout(() => {
+      fetch(`/api/search?query=${searchQuery}`, {
+        signal: controller.signal
+      }).then(res => res.json()).then(
+        (data: TrackData[]) => {
+          setSearchLoading(false);
+          setSearchResults(data);
+        },
+      );
+    }, 200); // 500ms delay
 
     return () => {
       controller.abort();
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
     }
   }, [searchQuery]);
 
@@ -58,18 +72,18 @@ function App() {
   }, [token]);
 
   // when search input blur, perform recommend
-  const [trackId, setTrackId] = useState<string | null>(null);
+  const [track, setTrack] = useState<TrackData | null>(null);
   const [recommendations, setRecommendations] = useState<TrackData[]>([]);
   const [recommendationsLoading, setRecommendationsLoading] = useState(false);
 
   useEffect(() => {
-    if (!trackId) return;
+    if (!track) return;
 
     const controller = new AbortController();
 
     setRecommendationsLoading(true);
 
-    fetch(`/api/recommend?track_id=${trackId}`, {
+    fetch(`/api/recommend?track_id=${track.track_id}`, {
       signal: controller.signal
     }).then(res => res.json()).then(
       (data: TrackData[]) => {
@@ -81,7 +95,7 @@ function App() {
     return () => {
       controller.abort();
     }
-  }, [trackId]);
+  }, [track]);
 
   return (
     <div className={styles.Root}>
@@ -96,65 +110,47 @@ function App() {
                  onChange={event => setSearchQuery(event.target.value)} value={searchQuery}/>
         </Card>
         <div className={styles.SwapContainer} data-search={showSearch}>
-          <Card className={styles.Results}>
-            {recommendations.length > 0 ? recommendations.map(track => <Song key={track.track_id} trackId={track.track_id}
-                                                                         title={track.track_name}
-                                                                         artist={track.artist_name}
-                                                                         token={token}
-                                                                         duration={track.duration_ms}
-                                                                         loading={recommendationsLoading}
-                                                                         onClick={() => {
-                                                                           setTrackId(track.track_id);
-                                                                           setShowSearch(false);
-                                                                         }}/>) : (
-              <div className={styles.NoResult}>
-                Start By Searching A Track!
-              </div>
-            )}
-          </Card>
+          <div className={styles.ResultsContainer}>{track && (
+            <Card>
+              <h5 style={{marginLeft: "0.30625rem", marginBottom: "0.25rem", marginTop: "0.125rem"}}>Showing
+                Recommendations For:</h5>
+              <Song trackId={track.track_id} artist={track.artist_name} duration={track.duration_ms} token={token}
+                    title={track.track_name}/>
+
+            </Card>
+          )}
+            <Card className={styles.Results}>
+              {recommendations.length > 0 ? recommendations.map(track => <Song key={track.track_id}
+                                                                               trackId={track.track_id}
+                                                                               title={track.track_name}
+                                                                               artist={track.artist_name}
+                                                                               token={token}
+                                                                               duration={track.duration_ms}
+                                                                               loading={recommendationsLoading}/>) : (
+                <div className={styles.NoResult}>
+                  {recommendationsLoading ? "Loading..." : "Start By Searching A Track!"}
+                </div>
+              )}
+            </Card>
+          </div>
 
           <Card className={styles.SearchResults} onPointerEnter={() => setInteracting(true)}
                 onPointerLeave={() => setInteracting(false)}>
-            {searchResults.length > 0 ? searchResults.map(track => <Song key={track.track_id} trackId={track.track_id}
-                                                                         title={track.track_name}
-                                                                         artist={track.artist_name}
-                                                                         token={token}
-                                                                         duration={track.duration_ms}
-                                                                         loading={searchLoading}
-                                                                         onClick={() => {
-                                                                           setTrackId(track.track_id);
-                                                                           setShowSearch(false);
-                                                                         }}/>) : (
+            {searchResults.length > 0 ? searchResults.map((track, i) => <Song key={track.track_id + i}
+                                                                              trackId={track.track_id}
+                                                                              title={track.track_name}
+                                                                              artist={track.artist_name}
+                                                                              token={token}
+                                                                              duration={track.duration_ms}
+                                                                              loading={searchLoading}
+                                                                              onClick={() => {
+                                                                                setTrack(track);
+                                                                                setShowSearch(false);
+                                                                              }}/>) : (
               <div className={styles.NoResult}>
-                No Results
+                {searchLoading ? "Loading..." : "No Results"}
               </div>
             )}
-            {/*<div className={"song-row"}>*/}
-            {/*  <div className={"album"}/>*/}
-            {/*  <div className={"song-text"}>*/}
-            {/*    <p className={"song-title"}>A Generic Song Title</p>*/}
-            {/*    <p className={"artist"}>John Doe</p>*/}
-            {/*  </div>*/}
-            {/*  <p className={"duration"}>00:00</p>*/}
-            {/*</div>*/}
-
-            {/*<div className={"song-row"}>*/}
-            {/*  <div className={"album"}/>*/}
-            {/*  <div className={"song-text"}>*/}
-            {/*    <p className={"song-title"}>A Generic Song Title</p>*/}
-            {/*    <p className={"artist"}>John Doe</p>*/}
-            {/*  </div>*/}
-            {/*  <p className={"duration"}>00:00</p>*/}
-            {/*</div>*/}
-
-            {/*<div className={"song-row"}>*/}
-            {/*  <div className={"album"}/>*/}
-            {/*  <div className={"song-text"}>*/}
-            {/*    <p className={"song-title"}>A Generic Song Title</p>*/}
-            {/*    <p className={"artist"}>John Doe</p>*/}
-            {/*  </div>*/}
-            {/*  <p className={"duration"}>00:00</p>*/}
-            {/*</div>*/}
           </Card>
         </div>
       </div>
