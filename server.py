@@ -5,6 +5,8 @@ import pandas as pd
 import kagglehub
 from fuzzywuzzy import fuzz
 
+from alg import get_song_recommendations
+
 # Download latest version
 dataset_path = kagglehub.dataset_download("amitanshjoshi/spotify-1million-tracks")
 
@@ -45,7 +47,11 @@ def search():
 def recommend():
     track_id = request.args.get('track_id')
 
-    return df.sample(6).to_dict(orient='records')
+    idx = df[df['track_id'] == track_id].index[0]
+
+    recommendations = get_song_recommendations(song_idx=idx)
+
+    return recommendations.to_dict(orient='records')
 
 
 @app.route('/')
