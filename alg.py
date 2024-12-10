@@ -81,7 +81,7 @@ def get_song_recommendations(song_idx=None):
     # Get the song's features
     song_features = X_scaled[idx].reshape(1, -1)
 
-    # Find nearest neighbors
+    # Find nearest neighborslol 
     distances, indices = knn.kneighbors(song_features)
 
     # Prepare recommendations
