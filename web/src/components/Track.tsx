@@ -1,12 +1,24 @@
 import {BaseHTMLAttributes, useEffect, useState} from "react";
 
-const Song = ({trackId, title, artist, token, duration, loading, ...props}: BaseHTMLAttributes<HTMLDivElement> & {
+import styles from "./Track.module.css";
+
+const Track = ({
+                trackId,
+                title,
+                artist,
+                token,
+                duration,
+                loading,
+                distance,
+                ...props
+              }: BaseHTMLAttributes<HTMLDivElement> & {
   trackId: string,
   title: string,
   artist: string,
   token: string,
   duration: number,
-  loading?: boolean
+  loading?: boolean,
+  distance?: number,
 }) => {
   const [displayImage, setDisplayImage] = useState<{
     url: string,
@@ -47,19 +59,20 @@ const Song = ({trackId, title, artist, token, duration, loading, ...props}: Base
   const minutes = Math.floor(duration / (60 * 1000)) % 60;
 
   return (
-    <div className={"song-row"} style={{
+    <div className={styles.TrackContainer} style={{
       opacity: loading ? 0.3 : 1,
     }} {...props}>
-      <div className={"album-container"}>
-        {displayImage && <img className={"album"} src={displayImage?.url} loading={"eager"} alt={trackId}/>}
+      <div className={styles.AlbumContainer}>
+        {displayImage && <img className={styles.Album} src={displayImage?.url} loading={"eager"} alt={trackId}/>}
       </div>
-      <div className={"song-text"}>
-        <p className={"song-title"}>{title}</p>
-        <p className={"artist"}>{artist}</p>
+      <div className={styles.Text}>
+        <p className={styles.Title}>{title}</p>
+        <p className={styles.Artist}>{artist}</p>
+        {distance && <p className={styles.Distance}>{Math.round(distance * 100) / 100}</p>}
       </div>
       <p className={"duration"}>{minutes}:{seconds < 10 && "0"}{seconds}</p>
     </div>
   )
 }
 
-export default Song;
+export default Track;

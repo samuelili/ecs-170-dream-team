@@ -2,13 +2,14 @@ import './App.css'
 import styles from "./App.module.css";
 import Card from "./components/Card.tsx";
 import {useEffect, useRef, useState} from "react";
-import Song from "./components/Song.tsx";
+import Track from "./components/Track.tsx";
 
 export type TrackData = {
   track_id: string;
   track_name: string;
   duration_ms: number;
   artist_name: string;
+  distance?: number;
 }
 
 function App() {
@@ -88,7 +89,7 @@ function App() {
     }).then(res => res.json()).then(
       (data: TrackData[]) => {
         setRecommendationsLoading(false);
-        setRecommendations(data);
+        setRecommendations(data.sort((a, b) => (b.distance ?? 0) - (a.distance ?? 0)));
       },
     );
 
@@ -115,22 +116,23 @@ function App() {
               <Card>
                 <h5 style={{marginLeft: "0.30625rem", marginBottom: "0.25rem", marginTop: "0.125rem"}}>Showing
                   Recommendations For:</h5>
-                <Song trackId={track.track_id} artist={track.artist_name} duration={track.duration_ms} token={token}
-                      title={track.track_name} onClick={() => {
+                <Track trackId={track.track_id} artist={track.artist_name} duration={track.duration_ms} token={token}
+                       title={track.track_name} onClick={() => {
                   window.open(`https://open.spotify.com/track/${track.track_id}`, '_blank')
                 }}/>
 
               </Card>
             )}
             <Card className={styles.Results}>
-              {recommendations.length > 0 ? recommendations.map(track => <Song key={track.track_id}
-                                                                               trackId={track.track_id}
-                                                                               title={track.track_name}
-                                                                               artist={track.artist_name}
-                                                                               token={token}
-                                                                               duration={track.duration_ms}
-                                                                               loading={recommendationsLoading}
-                                                                               onClick={() => {
+              {recommendations.length > 0 ? recommendations.map(track => <Track key={track.track_id}
+                                                                                trackId={track.track_id}
+                                                                                title={track.track_name}
+                                                                                artist={track.artist_name}
+                                                                                distance={track.distance}
+                                                                                token={token}
+                                                                                duration={track.duration_ms}
+                                                                                loading={recommendationsLoading}
+                                                                                onClick={() => {
                                                                                  window.open(`https://open.spotify.com/track/${track.track_id}`, '_blank')
                                                                                }}/>) : (
                 <div className={styles.NoResult}>
@@ -142,14 +144,14 @@ function App() {
 
           <Card className={styles.SearchResults} onPointerEnter={() => setInteracting(true)}
                 onPointerLeave={() => setInteracting(false)}>
-            {searchResults.length > 0 ? searchResults.map((track, i) => <Song key={track.track_id + i}
-                                                                              trackId={track.track_id}
-                                                                              title={track.track_name}
-                                                                              artist={track.artist_name}
-                                                                              token={token}
-                                                                              duration={track.duration_ms}
-                                                                              loading={searchLoading}
-                                                                              onClick={() => {
+            {searchResults.length > 0 ? searchResults.map((track, i) => <Track key={track.track_id + i}
+                                                                               trackId={track.track_id}
+                                                                               title={track.track_name}
+                                                                               artist={track.artist_name}
+                                                                               token={token}
+                                                                               duration={track.duration_ms}
+                                                                               loading={searchLoading}
+                                                                               onClick={() => {
                                                                                 setTrack(track);
                                                                                 setShowSearch(false);
                                                                               }}/>) : (
@@ -160,7 +162,7 @@ function App() {
           </Card>
         </div>
       </div>
-      <h5 className="footer">
+      <h5 className={styles.Footer}>
         Created by "The Dream Team" for Dr. Simmon's FQ ECS 170 Class
       </h5>
     </div>

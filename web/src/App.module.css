@@ -109,3 +109,7 @@
     color: rgba(255, 255, 255, 0.4);
     min-height: 200px;
 }
+
+.Footer {
+    margin-top: 1rem;
+}
