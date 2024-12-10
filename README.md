@@ -10,12 +10,12 @@ There are multiple music streaming services, many of which have their own method
 # To Run
 Execute the `start.sh` file found at the root of this project
 
-```
+```sh
 ./start.sh
 ```
 
 # To Build Web
-```angular2html
+```sh
 cd web
 
 yarn
