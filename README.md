@@ -1,7 +1,8 @@
 # Dream Team Recommender
 Created by "The Dream Team" for Dr. Simmon's FQ ECS 170 Class at University of California - Davis.
 
-This is a small and simple web app that provides song recommendations given a single song. It uses K-means to create 5 song recomendations from the Kaggle Dataset "Spotify 1 Million Tracks"
+This is a small and simple web app that provides song recommendations given a single song.
+It uses K-means to create 5 song recommendations from the [Kaggle Dataset "Spotify 1 Million Tracks"](https://www.kaggle.com/datasets/amitanshjoshi/spotify-1million-tracks)
 
 ## Members
 - Samuel Li
