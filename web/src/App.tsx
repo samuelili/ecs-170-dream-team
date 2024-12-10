@@ -89,7 +89,7 @@ function App() {
     }).then(res => res.json()).then(
       (data: TrackData[]) => {
         setRecommendationsLoading(false);
-        setRecommendations(data.sort((a, b) => (b.distance ?? 0) - (a.distance ?? 0)));
+        setRecommendations(data.sort((a, b) => (a.distance ?? 0) - (b.distance ?? 0)));
       },
     );
 
