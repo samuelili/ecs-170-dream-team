@@ -164,6 +164,8 @@ function App() {
       </div>
       <h5 className={styles.Footer}>
         Created by "The Dream Team" for Dr. Simmon's FQ ECS 170 Class
+        &nbsp;
+        <a href={"https://github.com/samuelili/ecs-170-dream-team"} target={"_blank"}>GitHub</a>
       </h5>
     </div>
   )
