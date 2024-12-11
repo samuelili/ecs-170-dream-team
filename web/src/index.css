@@ -41,3 +41,20 @@ a {
 input {
   font-family: "Lexend", Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
+
+button {
+  background: rgba(70, 80, 80, 0.2);
+  border-radius: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 0 1rem -0.25rem rgba(109, 110, 114, 0.1);
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+
+  transition: background 120ms;
+
+  &:hover {
+    background: rgba(158, 168, 173, 0.25);
+  }
+}
